@@ -1,7 +1,7 @@
 local M                         = {}
 
-local root_dir_cmd              = "./vendor/bin/phpunit"
--- local root_dir_cmd              = "php artisan test"
+-- local root_dir_cmd              = "./vendor/bin/phpunit"
+local root_dir_cmd              = "php artisan test --parallel"
 --
 local ts_utils                  = require("nvim-treesitter.ts_utils")
 
