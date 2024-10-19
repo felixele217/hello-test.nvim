@@ -1,12 +1,24 @@
-local augroup = vim.api.nvim_create_augroup("HelloWorld", { clear = true })
+local M = {}
 
-local function main()
-    print('hello world')
+M.setup = function()
+    vim.keymap.set('n', '<leader>hw', function()
+        M.runTests()
+    end)
 end
 
-local function setup()
-    main()
+M.runTests = function()
+    vim.cmd('vsplit | terminal')
+
+
+    vim.cmd('startinsert')
+
+    vim.api.nvim_buf_set_keymap(0, 't', '<CR>', '<C-\\><C-n>:q<CR>', {
+        noremap = true,
+        silent = true
+    })
+
+    local cmd = "./vendor/bin/pest"
+    vim.api.nvim_chan_send(vim.b.terminal_job_id, cmd .. "\n")
 end
 
-return { setup = setup }
-
+return M
