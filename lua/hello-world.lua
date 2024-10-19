@@ -5,13 +5,7 @@ local function main()
 end
 
 local function setup()
-    vim.api.nvim_create_autocmd("VimEnter",
-        {
-            group = augroup,
-            desc = "Print hello world",
-            once = true,
-            callback = main
-        })
+    main()
 end
 
 return { setup = setup }
