@@ -1,9 +1,10 @@
 local M                         = {}
 
--- local root_dir_cmd              = "./vendor/bin/phpunit"
-local root_dir_cmd              = "php artisan test --parallel"
+local root_dir_cmd              = "./vendor/bin/phpunit"
+-- local root_dir_cmd              = "php artisan test --parallel"
 --
 local ts_utils                  = require("nvim-treesitter.ts_utils")
+local register_of_last_cmd      = "9"
 
 local open_terminal             = function()
     vim.cmd('vsplit | terminal')
@@ -38,6 +39,10 @@ local register_keymaps = function()
         M.run_tests()
     end)
 
+    vim.keymap.set('n', '<leader>tl', function()
+        M.run_last()
+    end)
+
     vim.keymap.set('n', '<leader>tf', function()
         M.run_file()
     end)
@@ -50,10 +55,19 @@ end
 
 local run_command        = function(cmd)
     vim.api.nvim_chan_send(vim.b.terminal_job_id, cmd .. "\n")
+    vim.fn.setreg(register_of_last_cmd, cmd)
 end
 
 M.setup                  = function()
     register_keymaps()
+end
+
+M.run_last               = function()
+    setup_terminal()
+
+    local cmd = vim.fn.getreg(register_of_last_cmd)
+
+    run_command(cmd)
 end
 
 M.run_file               = function()
