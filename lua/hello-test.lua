@@ -7,7 +7,7 @@ local ts_utils                  = require("nvim-treesitter.ts_utils")
 local register_of_last_cmd      = "9"
 
 local open_terminal             = function()
-    vim.cmd('vsplit | terminal')
+    vim.cmd('vsplit | vertical resize ' .. math.floor(vim.o.columns * 0.3) .. ' | terminal')
     vim.cmd('startinsert')
 end
 
@@ -33,36 +33,12 @@ local setup_terminal            = function()
     register_terminal_keymaps()
 end
 
-
-local register_keymaps = function()
-    vim.keymap.set('n', '<leader>ta', function()
-        M.run_tests()
-    end)
-
-    vim.keymap.set('n', '<leader>tl', function()
-        M.run_last()
-    end)
-
-    vim.keymap.set('n', '<leader>tf', function()
-        M.run_file()
-    end)
-
-    vim.keymap.set('n', '<leader>tt', function()
-        M.run_test_at_cursor()
-    end)
-end
-
-
-local run_command        = function(cmd)
+local run_command               = function(cmd)
     vim.api.nvim_chan_send(vim.b.terminal_job_id, cmd .. "\n")
     vim.fn.setreg(register_of_last_cmd, cmd)
 end
 
-M.setup                  = function()
-    register_keymaps()
-end
-
-M.run_last               = function()
+M.run_last                      = function()
     setup_terminal()
 
     local cmd = vim.fn.getreg(register_of_last_cmd)
@@ -70,7 +46,7 @@ M.run_last               = function()
     run_command(cmd)
 end
 
-M.run_file               = function()
+M.run_file                      = function()
     local file = vim.fn.expand("%")
 
     setup_terminal()
@@ -80,13 +56,13 @@ M.run_file               = function()
     run_command(cmd)
 end
 
-M.run_tests              = function()
+M.run_tests                     = function()
     setup_terminal()
 
     run_command(root_dir_cmd)
 end
 
-local function_at_cursor = function()
+local function_at_cursor        = function()
     local node = ts_utils.get_node_at_cursor()
 
     if not node then
@@ -109,12 +85,12 @@ local function_at_cursor = function()
     end
 end
 
-local save_to_register   = function(cmd)
+local save_to_register          = function(cmd)
     local escaped_cmd = vim.fn.escape(cmd, "'")
     vim.cmd("let @X = '" .. escaped_cmd .. "'")
 end
 
-M.run_test_at_cursor     = function(ta)
+M.run_test_at_cursor            = function(ta)
     local function_name = function_at_cursor()
 
     if function_name == nil then
@@ -128,6 +104,28 @@ M.run_test_at_cursor     = function(ta)
     run_command(cmd)
 
     save_to_register(cmd)
+end
+
+local register_keymaps          = function()
+    vim.keymap.set('n', '<leader>ta', function()
+        M.run_tests()
+    end)
+
+    vim.keymap.set('n', '<leader>tl', function()
+        M.run_last()
+    end)
+
+    vim.keymap.set('n', '<leader>tf', function()
+        M.run_file()
+    end)
+
+    vim.keymap.set('n', '<leader>tt', function()
+        M.run_test_at_cursor()
+    end)
+end
+
+M.setup                         = function()
+    register_keymaps()
 end
 
 return M
