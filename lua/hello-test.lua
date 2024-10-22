@@ -1,3 +1,6 @@
+-- TODOS
+-- write tests :D
+
 local M                         = {}
 
 local root_dir_cmd              = "./vendor/bin/phpunit"
