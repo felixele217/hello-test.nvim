@@ -10,7 +10,7 @@ local ts_utils                  = require("nvim-treesitter.ts_utils")
 local register_of_last_cmd      = "9"
 
 local open_terminal             = function()
-    vim.cmd('vsplit | vertical resize ' .. math.floor(vim.o.columns * 0.3) .. ' | terminal')
+    vim.cmd('vsplit | vertical resize ' .. math.floor(vim.o.columns * 0.45) .. ' | terminal')
     vim.cmd('startinsert')
 end
 
