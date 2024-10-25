@@ -7,7 +7,7 @@ local root_dir_cmd              = "./vendor/bin/phpunit"
 -- local root_dir_cmd              = "php artisan test --parallel"
 --
 local ts_utils                  = require("nvim-treesitter.ts_utils")
-local register_of_last_cmd      = "9"
+local register_of_last_cmd      = "z"
 
 local open_terminal             = function()
     vim.cmd('vsplit | vertical resize ' .. math.floor(vim.o.columns * 0.45) .. ' | terminal')
@@ -105,8 +105,6 @@ M.run_test_at_cursor            = function(ta)
     local cmd = root_dir_cmd .. " --filter=" .. function_name
 
     run_command(cmd)
-
-    save_to_register(cmd)
 end
 
 local register_keymaps          = function()
