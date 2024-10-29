@@ -88,12 +88,7 @@ local function_at_cursor        = function()
     end
 end
 
-local save_to_register          = function(cmd)
-    local escaped_cmd = vim.fn.escape(cmd, "'")
-    vim.cmd("let @X = '" .. escaped_cmd .. "'")
-end
-
-M.run_test_at_cursor            = function(ta)
+M.run_test_at_cursor            = function()
     local function_name = function_at_cursor()
 
     if function_name == nil then
