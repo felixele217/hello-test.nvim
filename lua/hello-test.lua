@@ -6,7 +6,7 @@ local M                         = {}
 M.config                        = {
     register_of_last_cmd = "z",
     root_dir_cmd = "./vendor/bin/phpunit",
-    close_terminal_key = "<CR>"
+    close_terminal_key = "q"
 }
 
 local ts_utils                  = require("nvim-treesitter.ts_utils")
