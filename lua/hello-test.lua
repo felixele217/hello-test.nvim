@@ -10,7 +10,6 @@ M.config                        = {
 }
 
 local ts_utils                  = require("nvim-treesitter.ts_utils")
-local register_of_last_cmd      = "z"
 
 local open_terminal             = function()
     vim.cmd('vsplit | vertical resize ' .. math.floor(vim.o.columns * 0.45) .. ' | terminal')
@@ -42,13 +41,13 @@ end
 
 local run_command               = function(cmd)
     vim.api.nvim_chan_send(vim.b.terminal_job_id, cmd .. "\n")
-    vim.fn.setreg(register_of_last_cmd, cmd)
+    vim.fn.setreg(M.config.register_of_last_cmd, cmd)
 end
 
 M.run_last                      = function()
     setup_terminal()
 
-    local cmd = vim.fn.getreg(register_of_last_cmd)
+    local cmd = vim.fn.getreg(M.config.register_of_last_cmd)
 
     run_command(cmd)
 end
