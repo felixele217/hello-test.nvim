@@ -2,7 +2,7 @@
 
 Plugin to enable simple and fast testing development workflow.  
 
-All keybindings run the tests in a new terminal that can be closed pressing Enter and navigated with VIM keybindings
+All keybindings run the tests in a new terminal that can be closed pressing Enter (can be configured) and navigated with VIM keybindings
 once you press 'k' to enter VIM-Mode.
 
 ## Features
@@ -16,8 +16,18 @@ lazyvim
 ```
 return {
     'felixele217/hello-test.nvim',
+}
+```
+
+## Configuration
+lazyvim
+```
+return {
+    'felixele217/hello-test.nvim',
     config = function()
-        require('hello-test').setup()
+        require('hello-test').setup({
+            close_terminal_key = "<CR>" -- specify key that closes terminal
+        })
     end
 }
 ```
