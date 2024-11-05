@@ -3,9 +3,12 @@
 
 local M                         = {}
 
-local root_dir_cmd              = "./vendor/bin/phpunit"
--- local root_dir_cmd              = "php artisan test --parallel"
---
+M.config                        = {
+    register_of_last_cmd = "z",
+    root_dir_cmd = "./vendor/bin/phpunit",
+    close_terminal_key = "<CR>"
+}
+
 local ts_utils                  = require("nvim-treesitter.ts_utils")
 local register_of_last_cmd      = "z"
 
@@ -19,10 +22,11 @@ local register_terminal_keymaps = function()
     vim.api.nvim_buf_set_keymap(0, 't', 'k', '<C-\\><C-n><C-\\><C-n>', { noremap = true, silent = true })
 
     -- close terminal from terminal mode pressing enter
-    vim.api.nvim_buf_set_keymap(0, 't', '<CR>', '<C-\\><C-n>:q<CR>', { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(0, 't', M.config.close_terminal_key, '<C-\\><C-n>:q<CR>',
+        { noremap = true, silent = true })
 
     -- close terminal from normal mode pressing enter
-    vim.api.nvim_buf_set_keymap(0, 'n', '<CR>', ':q<CR>', { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(0, 'n', M.config.close_terminal_key, ':q<CR>', { noremap = true, silent = true })
 
     -- make terminal buffer big in terminal mode
     vim.api.nvim_buf_set_keymap(0, 't', "'", '<C-\\><C-n><C-\\><C-n><C-W>|', { noremap = true, silent = true })
@@ -54,7 +58,7 @@ M.run_file                      = function()
 
     setup_terminal()
 
-    local cmd = root_dir_cmd .. " " .. file
+    local cmd = M.config.root_dir_cmd .. " " .. file
 
     run_command(cmd)
 end
@@ -62,7 +66,7 @@ end
 M.run_tests                     = function()
     setup_terminal()
 
-    run_command(root_dir_cmd)
+    run_command(M.config.root_dir_cmd)
 end
 
 local function_at_cursor        = function()
@@ -97,7 +101,7 @@ M.run_test_at_cursor            = function()
 
     setup_terminal()
 
-    local cmd = root_dir_cmd .. " --filter=" .. function_name
+    local cmd = M.config.root_dir_cmd .. " --filter=" .. function_name
 
     run_command(cmd)
 end
@@ -120,7 +124,8 @@ local register_keymaps          = function()
     end)
 end
 
-M.setup                         = function()
+M.setup                         = function(opts)
+    M.config = vim.tbl_extend("force", M.config, opts or {})
     register_keymaps()
 end
 
