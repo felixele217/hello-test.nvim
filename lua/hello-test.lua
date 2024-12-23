@@ -16,16 +16,29 @@ local open_terminal             = function()
     vim.cmd('startinsert')
 end
 
+local close_terminal            = function()
+    local buffer_id = vim.api.nvim_get_current_buf()
+    local job_id = vim.b.terminal_job_id
+
+    if job_id then
+        vim.fn.jobstop(job_id)
+    end
+
+    vim.api.nvim_buf_delete(buffer_id, { force = true })
+end
+
 local register_terminal_keymaps = function()
     -- enter vim mode on pressing k
     vim.api.nvim_buf_set_keymap(0, 't', 'k', '<C-\\><C-n><C-\\><C-n>', { noremap = true, silent = true })
 
-    -- close terminal from terminal mode pressing enter
-    vim.api.nvim_buf_set_keymap(0, 't', M.config.close_terminal_key, '<C-\\><C-n>:q<CR>',
+    -- close terminal from terminal mode pressing close key
+    vim.api.nvim_buf_set_keymap(0, 't', M.config.close_terminal_key,
+        '<C-\\><C-n>:lua require("hello-test").close_terminal()<CR>',
         { noremap = true, silent = true })
 
-    -- close terminal from normal mode pressing enter
-    vim.api.nvim_buf_set_keymap(0, 'n', M.config.close_terminal_key, ':q<CR>', { noremap = true, silent = true })
+    -- close terminal from normal mode pressing close key
+    vim.api.nvim_buf_set_keymap(0, 'n', M.config.close_terminal_key, ':lua require("hello-test").close_terminal()<CR>',
+        { noremap = true, silent = true })
 
     -- make terminal buffer big in terminal mode
     vim.api.nvim_buf_set_keymap(0, 't', "'", '<C-\\><C-n><C-\\><C-n><C-W>|', { noremap = true, silent = true })
@@ -128,4 +141,7 @@ M.setup                         = function(opts)
     register_keymaps()
 end
 
+M.close_terminal                = close_terminal
+
 return M
+
