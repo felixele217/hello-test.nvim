@@ -9,8 +9,6 @@ M.config = {
 	close_terminal_key = "q",
 }
 
-local ts_utils = require("nvim-treesitter.ts_utils")
-
 local open_terminal = function()
 	vim.cmd("vsplit | vertical resize " .. math.floor(vim.o.columns * 0.45) .. " | terminal")
 	vim.cmd("startinsert")
@@ -90,8 +88,22 @@ M.run_tests = function()
 	run_command(M.config.root_dir_cmd)
 end
 
+local function get_node_at_cursor(winnr)
+	winnr = winnr or 0
+	local ok, parser = pcall(vim.treesitter.get_parser, winnr)
+	if not ok or not parser then
+		vim.notify("No treesitter parser found for this buffer", vim.log.levels.WARN)
+		return nil
+	end
+
+	local cursor = vim.api.nvim_win_get_cursor(winnr)
+	local row, col = cursor[1] - 1, cursor[2]
+	local root = parser:parse()[1]:root()
+	return root:named_descendant_for_range(row, col, row, col)
+end
+
 local function_at_cursor = function()
-	local node = ts_utils.get_node_at_cursor()
+	local node = get_node_at_cursor()
 
 	if not node then
 		return nil
